@@ -40,3 +40,11 @@ def destroy(id,db: session = Depends(get_db)):
   db.query(models.Blog).filter(models.Blog.id==id).delete(synchronize_session=False)
   db.commit()
   return {"detail":f"post with id {id} deleted"}
+
+@app.post("/user")
+def create_user(request: schemas.User,db: session = Depends(get_db)):
+  new_user = models.User(name=request.name,email=request.email,password=request.password)
+  db.add(new_user)
+  db.commit()
+  db.refresh(new_user)
+  return new_user
